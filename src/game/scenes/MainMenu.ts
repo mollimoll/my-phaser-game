@@ -4,7 +4,7 @@ import { EventBus } from '../EventBus';
 
 export class MainMenu extends Scene
 {
-    star: Phaser.GameObjects.Image;
+    circles: Phaser.GameObjects.Arc[] = [];
 
     constructor ()
     {
@@ -13,15 +13,21 @@ export class MainMenu extends Scene
 
     create ()
     {
-        this.star = this.add.image(512, 384, 'star');
+        for (let i = 0; i < 8; i++)
+        {
+            this.circles.push(this.add.circle(512, 384, 10, 0xffffff));
+        }
 
         EventBus.emit('current-scene-ready', this);
     }
 
     update (time: number, delta: number)
     {
-        this.star.x = 512 + Math.cos(time / 1000) * 200;
-        this.star.y = 384 + Math.sin(time / 1000) * 200;
+        this.circles.forEach((circle, index) => {
+            const angle = (time / 1000) + (index * (Math.PI * 2) / 8);
+            circle.x = 512 + Math.cos(angle) * 200;
+            circle.y = 384 + Math.sin(angle) * 200;
+        });
     }
 
     changeScene ()
